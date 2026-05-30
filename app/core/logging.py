@@ -9,10 +9,16 @@ from app.core.config import get_settings
 def configure_logging() -> None:
     settings = get_settings()
 
+    numeric_level = getattr(
+        logging,
+        settings.log_level.upper(),
+        logging.INFO,
+    )
+
     logging.basicConfig(
+        level=numeric_level,
         format="%(message)s",
         stream=sys.stdout,
-        level=settings.log_level.upper(),
     )
 
     structlog.configure(
@@ -23,7 +29,8 @@ def configure_logging() -> None:
             structlog.processors.JSONRenderer(),
         ],
         wrapper_class=structlog.make_filtering_bound_logger(
-            logging.getLevelName(settings.log_level.upper())
+            numeric_level
         ),
         logger_factory=structlog.PrintLoggerFactory(),
+        cache_logger_on_first_use=True,
     )
