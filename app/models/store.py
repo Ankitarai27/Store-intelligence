@@ -14,6 +14,9 @@ from app.db.base import Base
 from app.models.mixins import TimestampMixin
 
 if TYPE_CHECKING:
+    from app.models.anomaly import Anomaly
+    from app.models.event import Event
+    from app.models.transaction import Transaction
     from app.models.visitor import Visitor
 
 
@@ -48,14 +51,16 @@ class Store(TimestampMixin, Base):
 
     visitors: Mapped[list["Visitor"]] = relationship(
         back_populates="store",
-        cascade="all, delete-orphan",
     )
 
-    def __repr__(self) -> str:
-        return (
-            f"Store("
-            f"id={self.id}, "
-            f"name={self.name}, "
-            f"city={self.city}"
-            f")"
-        )
+    events: Mapped[list["Event"]] = relationship(
+        back_populates="store",
+    )
+
+    transactions: Mapped[list["Transaction"]] = relationship(
+        back_populates="store",
+    )
+
+    anomalies: Mapped[list["Anomaly"]] = relationship(
+        back_populates="store",
+    )

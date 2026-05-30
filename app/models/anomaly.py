@@ -4,10 +4,10 @@ import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Boolean
 from sqlalchemy import DateTime
 from sqlalchemy import ForeignKey
 from sqlalchemy import Index
+from sqlalchemy import String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
@@ -17,17 +17,16 @@ from app.db.base import Base
 from app.models.mixins import TimestampMixin
 
 if TYPE_CHECKING:
-    from app.models.event import Event
     from app.models.store import Store
-    from app.models.transaction import Transaction
 
 
-class Visitor(TimestampMixin, Base):
-    __tablename__ = "visitors"
+class Anomaly(TimestampMixin, Base):
+    __tablename__ = "anomalies"
 
     __table_args__ = (
-        Index("ix_visitors_store_id", "store_id"),
-        Index("ix_visitors_session_start", "session_start"),
+        Index("ix_anomaly_store_detected", "store_id", "detected_at"),
+        Index("ix_anomaly_type", "anomaly_type"),
+        Index("ix_anomaly_severity", "severity"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(
@@ -42,36 +41,31 @@ class Visitor(TimestampMixin, Base):
         nullable=False,
     )
 
-    is_staff: Mapped[bool] = mapped_column(
-        Boolean,
+    anomaly_type: Mapped[str] = mapped_column(
+        String(128),
         nullable=False,
-        default=False,
     )
 
-    session_start: Mapped[datetime] = mapped_column(
+    severity: Mapped[str] = mapped_column(
+        String(32),
+        nullable=False,
+    )
+
+    description: Mapped[str] = mapped_column(
+        String(1000),
+        nullable=False,
+    )
+
+    detected_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
     )
 
-    session_end: Mapped[datetime | None] = mapped_column(
+    resolved_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True),
         nullable=True,
     )
 
-    is_converted: Mapped[bool] = mapped_column(
-        Boolean,
-        nullable=False,
-        default=False,
-    )
-
     store: Mapped["Store"] = relationship(
-        back_populates="visitors",
-    )
-
-    events: Mapped[list["Event"]] = relationship(
-        back_populates="visitor",
-    )
-
-    transactions: Mapped[list["Transaction"]] = relationship(
-        back_populates="visitor",
+        back_populates="anomalies",
     )
