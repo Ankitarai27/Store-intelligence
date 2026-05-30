@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import uuid
 from datetime import datetime
+from decimal import Decimal
 from typing import TYPE_CHECKING
 from typing import Any
 
 from sqlalchemy import DateTime
+from sqlalchemy import Enum as SAEnum
 from sqlalchemy import ForeignKey
 from sqlalchemy import Index
 from sqlalchemy import Numeric
@@ -55,7 +57,10 @@ class Event(TimestampMixin, Base):
     )
 
     event_type: Mapped[EventType] = mapped_column(
-        String(64),
+        SAEnum(
+            EventType,
+            name="event_type_enum",
+        ),
         nullable=False,
     )
 
@@ -78,7 +83,7 @@ class Event(TimestampMixin, Base):
         nullable=True,
     )
 
-    confidence: Mapped[float] = mapped_column(
+    confidence: Mapped[Decimal] = mapped_column(
         Numeric(5, 4),
         nullable=False,
     )
