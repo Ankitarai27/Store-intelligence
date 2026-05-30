@@ -8,7 +8,7 @@ from app.core.config import get_settings
 from app.db.base import Base
 
 import app.models
-
+target_metadata = Base.metadata
 config = context.config
 
 settings = get_settings()

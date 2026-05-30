@@ -1,5 +1,7 @@
+# app/db/session.py
+
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
 
 from app.core.config import get_settings
 
@@ -19,3 +21,11 @@ SessionLocal = sessionmaker(
     autocommit=False,
     expire_on_commit=False,
 )
+
+
+def get_session():
+    db: Session = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

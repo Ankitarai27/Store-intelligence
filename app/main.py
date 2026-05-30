@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from app.api.health import router as health_router
+from app.api.events import router as events_router
 from app.core.config import get_settings
 from app.core.logging import configure_logging
 from app.middleware.request_logging import RequestLoggingMiddleware
@@ -20,7 +21,7 @@ app = FastAPI(
 app.add_middleware(RequestLoggingMiddleware)
 
 app.include_router(health_router)
-
+app.include_router(events_router)
 
 @app.get("/")
 async def root() -> dict:
