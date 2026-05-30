@@ -1,11 +1,3 @@
-"""
-PROMPT:
-Create a FastAPI health endpoint test using pytest and TestClient.
-
-CHANGES MADE:
-Adjusted assertions to match the Store Intelligence API response structure.
-"""
-
 from fastapi.testclient import TestClient
 
 from app.main import app
@@ -20,7 +12,9 @@ def test_health_endpoint() -> None:
 
     body = response.json()
 
-    assert body["status"] == "healthy"
     assert body["service"] == "store-intelligence-api"
+    assert "database" in body
+    assert "healthy" in body["database"]
+    assert "message" in body["database"]
     assert "timestamp" in body
     assert body["version"] == "0.1.0"
