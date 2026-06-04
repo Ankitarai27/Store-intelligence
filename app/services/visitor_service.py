@@ -20,12 +20,16 @@ class VisitorService:
                 is_converted=False,
             )
             self.visitor_repo.add(visitor)
+            self.visitor_repo.commit() 
             return visitor
 
         # session timeout logic
         if visitor.session_end:
             visitor.session_start = timestamp
             visitor.session_end = None
+
+            self.visitor_repo.add(visitor)   # 🔥 ADD THIS
+            self.visitor_repo.commit() 
 
         return visitor
 

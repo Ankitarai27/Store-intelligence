@@ -32,9 +32,10 @@ def upgrade() -> None:
         "BILLING_QUEUE_ABANDON",
         "REENTRY",
         name="event_type_enum",
+        create_type=False,
     )
-    event_type_enum.create(op.get_bind(), checkfirst=True)
 
+    event_type_enum.create(op.get_bind(), checkfirst=True)
     # =========================
     # STORES
     # =========================
@@ -94,17 +95,7 @@ def upgrade() -> None:
         ),
         sa.Column(
             "event_type",
-            sa.Enum(
-                "ENTRY",
-                "EXIT",
-                "ZONE_ENTER",
-                "ZONE_EXIT",
-                "ZONE_DWELL",
-                "BILLING_QUEUE_JOIN",
-                "BILLING_QUEUE_ABANDON",
-                "REENTRY",
-                name="event_type_enum",
-            ),
+            event_type_enum,
             nullable=False,
         ),
         sa.Column("camera_id", sa.String(length=128), nullable=False),

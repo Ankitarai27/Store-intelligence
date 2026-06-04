@@ -46,6 +46,8 @@ def run_migrations_online() -> None:
         poolclass=pool.NullPool,
     )
 
+    print("ALEMBIC URL =", connectable.url)
+
     with connectable.connect() as connection:
         context.configure(
             connection=connection,

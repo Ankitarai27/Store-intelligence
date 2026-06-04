@@ -17,7 +17,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
-
+from sqlalchemy import UniqueConstraint
 from app.db.base import Base
 from app.models.enums import EventType
 from app.models.mixins import TimestampMixin
@@ -29,8 +29,15 @@ if TYPE_CHECKING:
 
 class Event(TimestampMixin, Base):
     __tablename__ = "events"
+    
 
     __table_args__ = (
+        UniqueConstraint(
+            "visitor_id",
+            "timestamp",
+            "event_type",
+            name="uq_event_dedup"
+        ),
         Index("ix_events_store_timestamp", "store_id", "timestamp"),
         Index("ix_events_visitor_timestamp", "visitor_id", "timestamp"),
         Index("ix_events_event_type", "event_type"),
