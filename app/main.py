@@ -6,7 +6,6 @@ from app.core.config import get_settings
 from app.core.logging import configure_logging
 from app.middleware.request_logging import RequestLoggingMiddleware
 
-
 configure_logging()
 
 settings = get_settings()
@@ -22,6 +21,7 @@ app.add_middleware(RequestLoggingMiddleware)
 
 app.include_router(health_router)
 app.include_router(events_router)
+
 
 @app.get("/")
 async def root() -> dict:
